@@ -13,3 +13,8 @@ program
 
 program.parse(process.argv);
 const options = program.opts();
+fs.access(options.input, fs.constants.F_OK, (err) => {
+  if (err) {
+    console.error('Cannot find input file');
+    process.exit(1);
+  }
