@@ -43,3 +43,35 @@ fs.access(options.input, fs.constants.F_OK, (err) => {
         const ageParam = reqUrl.searchParams.get('age') === 'true';
 
         let result = [];
+
+        for (const item of records) {
+          // Якщо стоїть прапорець survived=true, залишаємо лише тих, хто вижив
+          if (survivedParam) {
+            const s = item.Survived;
+            // У даних Survived зазвичай 1 (число) або "1" або true
+            if (s != 1 && s !== '1' && s !== true && String(s).toLowerCase() !== 'true') {
+              continue; // Пропускаємо, якщо не вижив
+            }
+          }
+
+          // Формуємо об'єкт (порядок полів важливий)
+          const formatted = {
+            name: item.Name
+          };
+
+          if (ageParam) {
+            // Рішення студента: Якщо вік не вказано або порожній, віддаємо null
+            if (item.Age !== undefined && item.Age !== null && item.Age !== '') {
+              formatted.age = Number(item.Age);
+            } else {
+              formatted.age = null;
+            }
+          }
+
+          formatted.ticket = item.Ticket;
+          
+          result.push(formatted);
+        }
+
+        const jsonResult = JSON.stringify(result, null, 2);
+        
