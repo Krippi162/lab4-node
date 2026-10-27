@@ -18,3 +18,12 @@ fs.access(options.input, fs.constants.F_OK, (err) => {
     console.error('Cannot find input file');
     process.exit(1);
   }
+  const server = http.createServer((req, res) => {
+    const reqUrl = new URL(req.url, `http://${options.host}:${options.port}`);
+
+    // Обробка неіснуючих маршрутів (код 404)
+    if (reqUrl.pathname !== '/') {
+      res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+      res.end('Шлях не знайдено (404)');
+      return;
+    }
