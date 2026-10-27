@@ -94,4 +94,7 @@ fs.access(options.input, fs.constants.F_OK, (err) => {
       }
     });
   });
-  
+  server.listen(options.port, options.host, () => {
+    console.log(`Сервер запущено на http://${options.host}:${options.port}`);
+  });
+});
