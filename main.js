@@ -74,4 +74,24 @@ fs.access(options.input, fs.constants.F_OK, (err) => {
         }
 
         const jsonResult = JSON.stringify(result, null, 2);
-        
+        if (options.output) {
+          fs.writeFile(options.output, jsonResult, 'utf-8', (writeErr) => {
+            if (writeErr) {
+              console.error('Помилка запису у файл output:', writeErr);
+              // Навіть при помилці запису сервер продовжує роботу
+            }
+          });
+        }
+
+        // Повертаємо клієнту результат
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(jsonResult);
+
+      } catch (parseErr) {
+        // Якщо файл пошкоджено (наприклад, не NDJSON)
+        res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
+        res.end('Помилка сервера: дані у файлі пошкоджені або мають невірний формат');
+      }
+    });
+  });
+  
