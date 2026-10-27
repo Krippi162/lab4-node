@@ -27,3 +27,9 @@ fs.access(options.input, fs.constants.F_OK, (err) => {
       res.end('Шлях не знайдено (404)');
       return;
     }
+    fs.readFile(options.input, 'utf-8', (readErr, data) => {
+      if (readErr) {
+        res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
+        res.end('Помилка сервера: не вдалося прочитати файл даних');
+        return;
+      }
