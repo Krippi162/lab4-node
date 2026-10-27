@@ -33,3 +33,13 @@ fs.access(options.input, fs.constants.F_OK, (err) => {
         res.end('Помилка сервера: не вдалося прочитати файл даних');
         return;
       }
+      try {
+        // Парсимо NDJSON (кожен рядок - окремий JSON об'єкт)
+        const lines = data.split('\n').filter(line => line.trim() !== '');
+        const records = lines.map(line => JSON.parse(line));
+
+        // Зчитуємо параметри запиту
+        const survivedParam = reqUrl.searchParams.get('survived') === 'true';
+        const ageParam = reqUrl.searchParams.get('age') === 'true';
+
+        let result = [];
